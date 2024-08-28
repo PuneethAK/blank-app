@@ -1,72 +1,63 @@
 import streamlit as st
 
-# Function to generate a contract clause (dummy implementation)
-def generate_clause(clause_type, context, jurisdiction, risk_tolerance, tone, special_requirements):
-    return (
-        f"The parties agree to keep all information confidential for a period of five years from the date of disclosure. "
-        f"This clause is drafted for a {context} in the jurisdiction of {jurisdiction}. "
-        f"Risk tolerance is {risk_tolerance} and the tone is {tone}. "
-        f"Special requirements: {special_requirements}."
+# Contract Clause Generation
+st.title("Pharmaceutical Contract Management")
+
+st.sidebar.header("Contract Clause Generation")
+
+# Dropdown for Type of Agreement
+agreement_type = st.sidebar.selectbox(
+    "Select Agreement Type", 
+    ["--Select--", "NDA", "Supply Agreement", "Service Agreement"]
+)
+
+# Subcategory Dropdown (Conditional)
+if agreement_type == "Service Agreement":
+    subcategory = st.sidebar.selectbox(
+        "Select Subcategory", 
+        ["--Select--", "Maintenance", "Consulting"]
     )
+else:
+    subcategory = None
 
-# Function to analyze the clause (dummy implementation)
-def analyze_clause(clause):
-    return "The clause complies with standard confidentiality requirements. Ensure that the duration is appropriate for the type of information shared."
+# Clauses Dropdown
+if agreement_type != "--Select--":
+    clause = st.sidebar.selectbox(
+        "Select Clause",
+        ["--Select--", "Confidentiality", "Termination", "Liability", "Payment Terms"]
+    )
+else:
+    clause = None
 
-# Function to suggest improvements (dummy implementation)
-def suggest_improvements(clause):
-    return "Consider specifying exceptions to confidentiality, such as information already in the public domain."
+# Auto-filled Text Area for Prompt
+if clause != "--Select--" and clause is not None:
+    prompt_text = f"Please draft a {clause} clause for a {agreement_type}."
+    if subcategory:
+        prompt_text += f" This is a {subcategory} agreement."
 
-# Function to assess risk (dummy implementation)
-def assess_risk(clause):
-    return "Low risk – the clause adequately protects confidential information and aligns with industry standards."
+    st.text_area("Prompt", prompt_text, height=100)
 
-# Function to check compliance (dummy implementation)
-def check_compliance(clause):
-    return "Compliant with California state law and GDPR requirements."
+# Button to Generate Clause
+if st.sidebar.button("Generate Clause"):
+    st.success(f"{clause} clause for {agreement_type} generated successfully.")
 
-# Function to generate metadata (dummy implementation)
-def generate_metadata(clause):
-    return {
-        "Word Count": len(clause.split()),
-        "Readability Score": 65,
-        "Key Terms": ["confidentiality", "disclosure", "duration"]
-    }
+# Contract Clause Validation
+st.sidebar.header("Contract Clause Validation")
 
+st.sidebar.write("Upload a contract for validation:")
 
-# Streamlit UI
-st.title("Contract Clause Generator")
+# File upload
+uploaded_file = st.sidebar.file_uploader("Choose a file", type=["pdf", "docx", "txt"])
 
-st.header("Input Fields")
-clause_type = st.selectbox("Clause Type", ["Confidentiality", "Indemnity", "Payment Terms"])
-context = st.selectbox("Contract Context", ["Non-disclosure Agreement", "Service Agreement", "Supplier"])
-jurisdiction = st.selectbox("Jurisdiction", ["California, USA", "EU", "India"])
-risk_tolerance = st.radio("Risk Tolerance", ["High", "Medium", "Low"])
-tone = st.radio("Language Tone", ["Formal", "Neutral", "Friendly"])
-special_requirements = st.text_area("Special Requirements", "Include confidentiality duration of 5 years")
-
-if st.button("Generate Clause"):
-    generated_clause = generate_clause(clause_type, context, jurisdiction, risk_tolerance, tone, special_requirements)
-    st.header("Generated Contract Clause")
-    st.text_area("Generated Clause", generated_clause, height=200, max_chars=None, key=None)
-
-    clause_analysis = analyze_clause(generated_clause)
-    st.subheader("Clause Analysis")
-    st.write(clause_analysis)
-
-    suggested_improvements = suggest_improvements(generated_clause)
-    st.subheader("Suggested Improvements")
-    st.write(suggested_improvements)
-
-    risk_assessment = assess_risk(generated_clause)
-    st.subheader("Risk Assessment")
-    st.write(risk_assessment)
-
-    compliance_check = check_compliance(generated_clause)
-    st.subheader("Compliance Check")
-    st.write(compliance_check)
-
-    clause_metadata = generate_metadata(generated_clause)
-    st.subheader("Clause Metadata")
-    st.write(clause_metadata)
-
+# Perform Validation
+if uploaded_file is not None:
+    st.write("File uploaded successfully!")
+    st.write("Performing validation checks...")
+    
+    # Sample Validation (This is where you'd implement actual logic)
+    st.checkbox("Check for Compliance with Regulations", value=True)
+    st.checkbox("Check for Consistency", value=True)
+    st.checkbox("Check for Missing Clauses", value=False)
+    
+    if st.sidebar.button("Validate"):
+        st.success("Validation completed successfully!")
